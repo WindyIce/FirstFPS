@@ -8,6 +8,9 @@ public class WanderigAI : MonoBehaviour {
     public float gravity = -9.8f;
     private bool alive;
 
+    [SerializeField] private GameObject fireballPrefab;
+    private GameObject fireball;
+
     public void SetAlive(bool _alive)
     {
         alive = _alive;
@@ -28,6 +31,17 @@ public class WanderigAI : MonoBehaviour {
             RaycastHit hit;
             if (Physics.SphereCast(ray, 0.75f, out hit))
             {
+                GameObject hitObject = hit.transform.gameObject;
+                if (hitObject.GetComponent<PlayCharacter>())//检查目标对象是否是玩家(玩家在面前)
+                {
+                    if (fireball == null)
+                    {
+                        fireball = Instantiate(fireballPrefab) as GameObject;
+                        fireball.transform.position = transform.TransformPoint(Vector3.forward * 1.5f);
+                        fireball.transform.rotation = transform.rotation;
+                    }
+                }
+
                 if (hit.distance < obstacleRange)
                 {
                     float angle = Random.Range(-110, 110);
