@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class RayShooter : MonoBehaviour {
 
@@ -17,7 +18,7 @@ public class RayShooter : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //响应鼠标按键
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)&&!EventSystem.current.IsPointerOverGameObject())
         {
             Vector3 point = new Vector3(camera.pixelWidth/2,camera.pixelHeight/2,0);//屏幕中心
             Ray ray = camera.ScreenPointToRay(point);//在摄像机所在位置创建射线
