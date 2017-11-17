@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WanderigAI : MonoBehaviour {
     public float speed = 3.0f;
+    public const float baseSpeed = 3.0f;
     public float obstacleRange = 5.0f;
     public float gravity = -9.8f;
     private bool alive;
@@ -20,9 +22,26 @@ public class WanderigAI : MonoBehaviour {
 	void Start () {
         alive = true;
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    void Awake()
+    {
+        Messenger<float>.AddListener(GameEvent.SPEED_CHANGED, OnSpeedChanged);
+    }
+
+    private void OnSpeedChanged(float value)
+    {
+        speed = baseSpeed * value;
+        Debug.Log("value: " + value);
+        Debug.Log("speed: " + speed);
+    }
+
+    void OnDestroy()
+    {
+        Messenger<float>.RemoveListener(GameEvent.SPEED_CHANGED, OnSpeedChanged);
+    }
+
+    // Update is called once per frame
+    void Update () {
         if (alive)
         {
             transform.Translate(0, 0, speed * Time.deltaTime);
@@ -44,7 +63,7 @@ public class WanderigAI : MonoBehaviour {
 
                 if (hit.distance < obstacleRange)
                 {
-                    float angle = Random.Range(-110, 110);
+                    float angle = UnityEngine.Random.Range(-110, 110);
                     transform.Rotate(0, angle, 0);
                 }
             }

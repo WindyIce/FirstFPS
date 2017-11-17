@@ -32,6 +32,7 @@ public class RayShooter : MonoBehaviour {
                 if (target != null)   //检查对象上是否有ReactiveTarget组件
                 {
                     target.ReactToHit();
+                    Messenger.Broadcast(GameEvent.ENEMY_HIT);
                 }
                 else
                 {
