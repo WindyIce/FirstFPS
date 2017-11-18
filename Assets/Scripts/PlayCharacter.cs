@@ -18,6 +18,7 @@ public class PlayCharacter : MonoBehaviour {
     public void Hurt(int damage)
     {
         health -= damage;
+        // TODO:让玩家可以死，用事件系统？
         Debug.Log("Health: " + health);
     }
 }
