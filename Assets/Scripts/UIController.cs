@@ -8,12 +8,15 @@ public class UIController : MonoBehaviour {
 
     [SerializeField] private Text scoreLabel;
     [SerializeField] private SettingPopup settingPopup;
+    [SerializeField] private EndingPopUp endingPopUp;
+    
 
     private int score;
 
     private void Awake()
     {
         Messenger.AddListener(GameEvent.ENEMY_HIT, OnEnemyHit);//响应事件的方法
+        Messenger.AddListener(GameEvent.PLAYER_DIED, OnOpenEnding);
     }
 
     private void OnEnemyHit()
@@ -25,6 +28,7 @@ public class UIController : MonoBehaviour {
     private void OnDestroy()
     {
         Messenger.RemoveListener(GameEvent.ENEMY_HIT,OnEnemyHit);
+        Messenger.RemoveListener(GameEvent.PLAYER_DIED, OnOpenEnding);
     }
 
     // Use this for initialization
@@ -33,6 +37,7 @@ public class UIController : MonoBehaviour {
         scoreLabel.text = score.ToString();
 
         settingPopup.Close();
+        endingPopUp.Close();
 	}
 	
 	// Update is called once per frame
@@ -43,5 +48,10 @@ public class UIController : MonoBehaviour {
     public void OnOpenSettings()
     {
         settingPopup.Open();
+    }
+
+    public void OnOpenEnding()
+    {
+        endingPopUp.Open();
     }
 }

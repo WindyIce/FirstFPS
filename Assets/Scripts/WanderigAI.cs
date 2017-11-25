@@ -8,9 +8,11 @@ public class WanderigAI : MonoBehaviour {
     public const float baseSpeed = 3.0f;
     public float obstacleRange = 5.0f;
     public float gravity = -9.8f;
+    private bool onFloor;
     private bool alive;
     private bool foundPlayer;
     private PlayCharacter player;
+    private double timeCount;
 
     [SerializeField] private GameObject fireballPrefab;
     private GameObject fireball;
@@ -24,6 +26,8 @@ public class WanderigAI : MonoBehaviour {
 	void Start () {
         alive = true;
         foundPlayer = false;
+        onFloor = false;
+        timeCount = 0;
 	}
 
     void Awake()
@@ -43,12 +47,23 @@ public class WanderigAI : MonoBehaviour {
         Messenger<float>.RemoveListener(GameEvent.SPEED_CHANGED, OnSpeedChanged);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log(collision.collider.gameObject.name);
+        if(collision.collider.gameObject.name=="Floor")
+            onFloor = true;
+    }
+
     // Update is called once per frame
     void Update () {
+        timeCount += Time.deltaTime;
         if (alive)
         {
-            transform.Translate(0, 0, speed * Time.deltaTime);
-
+            //如果不在地板（在空中）就掉落
+            if(!onFloor)
+                transform.Translate(0, gravity, speed * Time.deltaTime);
+            else
+                transform.Translate(0, 0, speed * Time.deltaTime);
             Ray ray = new Ray(transform.position, transform.forward);
             RaycastHit hit;
             
@@ -72,6 +87,12 @@ public class WanderigAI : MonoBehaviour {
                     //发现玩家后，每次都会逼近玩家
                     transform.forward = player.transform.position - transform.position;
                 }
+                else if((int)timeCount%4==0)
+                {
+                    float angle = UnityEngine.Random.Range(-30,30);
+                    transform.Rotate(0, angle, 0);
+                    timeCount += 1;
+                }
 
                 if (hit.distance < obstacleRange)
                 {
@@ -79,6 +100,7 @@ public class WanderigAI : MonoBehaviour {
                     transform.Rotate(0, angle, 0);
                 }
             }
+            
         }
 	}
 }
